@@ -1,0 +1,121 @@
+name: ParkourMaker
+version: '${version}'
+description: Plugin that offers creation of Parkour maps for players to enjoy!
+authors: [ Lynx ]
+
+main: me.lynx.parkourmaker.ParkourMakerAdapter
+softdepend: [ PlaceholderAPI ]
+depend: [ WorldEdit ]
+api-version: 1.13
+
+commands:
+  parkourmaker:
+    usage: /<command>
+    description: Used for all the Parkour Maker commands.
+    aliases: [pm, parkour]
+
+permissions:
+  parkour-maker.*:
+    default: op
+    description: Permission that allows full control of the plugin.
+    children:
+      parkour-maker.admin: true
+  parkour-maker.admin:
+    default: op
+    children:
+      parkour-maker.command.*: true
+      parkour-maker.sign.*: true
+      parkour-maker.ignore-cooldown.*: true
+  parkour-maker.command.*:
+    default: op
+    descriptions: Acess to all plugin commands.
+    children:
+      parkour-maker.command.addcheckpoint: true
+      parkour-maker.command.addfallzone: true
+      parkour-maker.command.addreward: true
+      parkour-maker.command.addsigntext: true
+      parkour-maker.command.checkpoint: true
+      parkour-maker.command.createparkour: true
+      parkour-maker.command.editmap: true
+      parkour-maker.command.help: true
+      parkour-maker.command.join: true
+      parkour-maker.command.list: true
+      parkour-maker.command.lobby: true
+      parkour-maker.command.reload: true
+      parkour-maker.command.setcooldown: true
+      parkour-maker.command.setdisplayname: true
+      parkour-maker.command.setfinish: true
+      parkour-maker.command.setfinishmessage: true
+      parkour-maker.command.setfinishteleport: true
+      parkour-maker.command.setlobby: true
+      parkour-maker.command.setrewardtype: true
+      parkour-maker.command.setstartmessage: true
+      parkour-maker.command.setstart: true
+      parkour-maker.command.toggle: true
+      parkour-maker.command.list.seedisabled: true
+  parkour-maker.sign.*:
+    default: op
+    children:
+      parkour-maker.sign.create: true
+      parkour-maker.sign.use: true
+  parkour-maker.ignore-cooldown.*:
+    default: op
+    children:
+      parkour-maker.ignore-cooldown.join: true
+      parkour-maker.ignore-cooldown.reward: true
+  parkour-maker.ignore-cooldown.join:
+    default: op
+  parkour-maker.ignore-cooldown.reward:
+    default: op
+  parkour-maker.join.*:
+    default: op
+  parkour-maker.command.list.seedisabled:
+    default: op
+  parkour-maker.sign.create:
+    default: op
+  parkour-maker.sign.use:
+    default: true
+  parkour-maker.command.addcheckpoint:
+    default: op
+  parkour-maker.command.addfallzone:
+    default: op
+  parkour-maker.command.addreward:
+    default: op
+  parkour-maker.command.addsigntext:
+    default: op
+  parkour-maker.command.checkpoint:
+    default: op
+  parkour-maker.command.createparkour:
+    default: op
+  parkour-maker.command.editmap:
+    default: op
+  parkour-maker.command.help:
+    default: true
+  parkour-maker.command.join:
+    default: true
+  parkour-maker.command.list:
+    default: true
+  parkour-maker.command.lobby:
+    default: true
+  parkour-maker.command.reload:
+    default: op
+  parkour-maker.command.setcooldown:
+    default: op
+  parkour-maker.command.setdisplayname:
+    default: op
+  parkour-maker.command.setfinish:
+    default: op
+  parkour-maker.command.setfinishmessage:
+    default: op
+  parkour-maker.command.setfinishteleport:
+    default: op
+  parkour-maker.command.setlobby:
+    default: op
+  parkour-maker.command.setrewardtype:
+    default: op
+  parkour-maker.command.setstartmessage:
+    default: op
+  parkour-maker.command.setstart:
+    default: op
+  parkour-maker.command.toggle:
+    default: op

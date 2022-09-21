@@ -1,0 +1,12 @@
+#Welcome to the configuration file for Parkour Maker.
+
+#Prefix that will be set before every message sent in the chat.
+message-prefix: '#42473f[#75ff1fParkourMaker#42473f] &r'
+#Legacy prefix for minecraft versions below 1.16
+#message-prefix: '&8[&aParkourMaker&8] &r'
+
+#Should operators be notified if there is a new version of the plugin out when they join the server.
+notify-operator-new-version: true
+
+#DO NOT change these value!
+config-version: 1

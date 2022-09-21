@@ -1,0 +1,196 @@
+#Here you can change all the messages to your liking, you can even use your own languages if you wish.
+#Make sure to use the placeholders(case sensitive) provided by the plugin for more detailed messages.
+
+#Available placeholders:
+#%player-name% - players name
+#%nl% - line separator
+#checkpoint-position - current position for checkpoint
+#type - relevant command type
+#checkpoint-name - name of the checkpoint
+#parkour-name - name of the parkour map
+#fallzone-name - name of the fallzone
+#%command% - command that is being executed on the player
+#%number% - relevant number requirement
+#%line% - represents sign line
+#%line-text% - represents text in sign line
+#%command-usage% - proper usage of the command
+#%command-message% - help message to the related command
+#%command-alias% - all command aliases
+#%cooldown% - time left for different cooldowns used
+#%amount% - relevant amount required
+#%map-display-name% - used only for set map display name command
+
+#If set to true it will use the colors from scheme to stylize the messages,
+#color codes in the messages will be ignored. If you want to manually set colors for each
+#message set it to false.
+use-color-scheme: true
+color-scheme:
+  primary: '#75ff1f'
+  secondary: '#42473f'
+  default-text: '#a3fc77'
+  alternative-text: '#f3f772'
+  parkour-map: '#75fffa'
+  player: '#29b8ff'
+  warning: '#E11A1A'
+
+#legacy color scheme, use this one if you're running on versions below 1.16.
+#Or set up your own scheme.
+#color-scheme:
+#  primary: '&a'
+#  secondary: '&8'
+#  default-text: '&a'
+#  alternative-text: '&e'
+#  parkour-map: '&b'
+#  player: '&3'
+#  warning: '&c'
+
+teleported-to-lobby:
+  message: 'You have been teleported to parkour lobby!'
+  warning: false
+not-in-map:
+  message: 'Youre not in any parkour maps at the moment!'
+  warning: true
+teleported-to-checkpoint:
+  message: 'You have been teleported to your last checkpoint(%checkpoint-name%)!'
+  warning: false
+lobby-location-not-set:
+  message: 'Lobby location is not set!'
+  warning: true
+map-not-found:
+  message: 'Map with %parkour-name% name does not exist!'
+  warning: true
+join-cooldown:
+  message: 'You need to wait %cooldown%sec more before you can join %parkour-name% map!'
+  warning: true
+reward-cooldown:
+  message: 'You need to wait %cooldown%sec more before you can receive rewards from %parkour-name% map!'
+  warning: true
+started-map:
+  message: 'You joined %parkour-name% map, good luck!'
+  warning: false
+finished-map:
+  message: 'You finished %parkour-name% map, good job!'
+  warning: false
+checkpoint-reached:
+  message: 'You reached %checkpoint-name% checkpoint(%checkpoint-position%)!'
+  warning: flase
+fall-in-fallzone:
+  message: 'You wore moved to %checkpoint-name% because you fell in %fallzone-name% fallzone!'
+  warning: false
+map-list-tittle:
+  message: 'List of all parkour maps:'
+  warning: false
+map-list-map:
+  message: ' - %parkour-name%'
+  warning: false
+not-editing-map:
+  message: 'You are currently not in editor mode for any map!'
+  warning: true
+lobby-location-set:
+  message: 'Lobby location has been set!'
+  warning: false
+no-permission:
+  message: 'You do not have permission to do that!'
+  warning: true
+invalid-position:
+  message: '%checkpoint-position% is not a valid position!'
+  warning: true
+invalid-type:
+  message: '%type% is not a valid type!'
+  warning: true
+invalid-selection:
+  message: 'World Edit selection is not complete!'
+  warning: true
+invalid-line:
+  message: '%line% is not a valid line for sign!'
+  warning: true
+invalid-number:
+  message: '%number% is not a valid number!'
+  warning: true
+checkpoint-added:
+  message: '%checkpoint-name% checkpoint set on position %checkpoint-position% for %parkour-name% map!'
+  warning: false
+fallzone-added:
+  message: '%fallzone-name% fallzone has been added to %parkour-name% map!'
+  warning: false
+reward-added:
+  message: 'Reward with "%command%" command has been added to %parkour-name% map!'
+  warning: false
+sign-text-added:
+  message: 'Line %line% for %parkour-name% map set to "%line-text%"!'
+  warning: false
+has-to-exit-edit-mode:
+  message: 'You have to exit edit more first before doing that!'
+  warning: true
+map-name-taken:
+  message: '%parkour-name% name is already taken!'
+  warning: true
+parkour-map-created:
+  message: 'You created %parkour-name% map and wore automatically put in edit mode for it!'
+  warning: false
+edit-mode-activated:
+  message: 'You have entered editor mode for %parkour-name% map!'
+  warning: false
+already-editing-another-map:
+  message: 'You are already in the editor mode for %parkour-name% map, leave it first before trying to edit another map!'
+  warning: true
+edit-mode-deactivated:
+  message: 'You are no longer in editor mode for %parkour-name% map!'
+  warning: false
+invalid-command:
+  message: '%command% is not a valid command!'
+  warning: true
+plugin-reloaded:
+  message: 'Parkour Maker has been reloaded(%ms%ms).'
+  warning: false
+command-usage:
+  message: 'Usage: %command-usage%'
+  warning: false
+player-only-command:
+  message: 'This command can only be run by a player!'
+  warning: true
+already-in-map:
+  message: 'You are already in a map, leave or finish it before trying to join!'
+  warning: true
+map-disabled:
+  message: '%parkour-name% map is currently disabled!'
+  warning: true
+join-sign-created:
+  message: 'Join sign for %parkour-name% map has been created!'
+  warning: false
+invalid-amount:
+  message: '%amount% is not a valid amount!'
+  warning: true
+cooldown-set:
+  message: '%type% cooldown has been set to %amount%sec for %parkour-name% map!'
+  warning: false
+display-name-set:
+  message: '%map-display-name% has been set as display name for %parkour-name% map!'
+  warning: false
+finish-set:
+  message: 'Finish for %parkour-name% map has been set!'
+  warning: false
+finish-teleport-set:
+  message: 'Finish teleport location for %parkour-name% map has been set!'
+  warning: false
+finish-message-set:
+  message: 'Finish message for %parkour-name% map has been set!'
+  warning: false
+reward-type-set:
+  message: 'Reward type for %parkour-name% map has been set to %type%'
+  warning: false
+start-set:
+  message: 'Start for %parkour-name% map has been set!'
+  warning: false
+start-message-set:
+  message: 'Start message for %parkour-name% map has been set!'
+  warning: false
+set-map-enabled:
+  message: '%parkour-name% map has been enabled!'
+  warning: false
+set-map-disabled:
+  message: '%parkour-name% map has been disabled!'
+  warning: false
+map-incomplete:
+  message: '%parkour-name% map is missing essential features and cannot be enabled!'
+  warning: true
