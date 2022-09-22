@@ -119,6 +119,7 @@ run/
 
 build.gradle
 gradlew
+gradlew.bat
 gradle.properties
 settings.gradle
 gradle
