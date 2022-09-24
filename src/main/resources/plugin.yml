@@ -26,6 +26,7 @@ permissions:
       parkour-maker.command.*: true
       parkour-maker.sign.*: true
       parkour-maker.ignore-cooldown.*: true
+      parkour-maker.join.*: true
   parkour-maker.command.*:
     default: op
     descriptions: Acess to all plugin commands.
