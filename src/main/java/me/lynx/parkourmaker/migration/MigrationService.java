@@ -7,7 +7,7 @@ import me.lynx.parkourmaker.migration.messages.MessageMigration;
 public class MigrationService {
 
     private static Integer actualConfigVersion;
-    public static final int CURRENT_CONFIG_VERSION = 1;
+    public static final int CURRENT_CONFIG_VERSION = 2;
     /* Current config version has to be changed in config file as well in resources. */
 
     private final ConfigMigration configMigration;

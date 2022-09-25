@@ -154,6 +154,28 @@ public class RunnerHandler implements Listener {
                 Message message = MessageManager.instance().newMessage("fall-in-fallzone")
                     .fallzoneName(fallzone.getName());
 
+                if (runner.getMap().getAttempts() > 0) {
+                    int attemptsLeft = runner.getAttempts();
+                    if (attemptsLeft > 0) {
+                        runner.setAttempts(attemptsLeft - 1);
+                        MessageManager.instance().newMessage("lost-attempt")
+                            .playerName(e.getPlayer().getName())
+                            .parkourName(runner.getMap().getDisplayName())
+                            .amount(runner.getAttempts() + "")
+                            .send(e.getPlayer());
+                    } else {
+                        Location lobbyLoc = ParkourMakerPlugin.instance().getStorage().getLobbyLocation();
+                        e.getPlayer().teleport(lobbyLoc);
+                        MessageManager.instance().newMessage("no-attempts-left")
+                            .playerName(e.getPlayer().getName())
+                            .parkourName(runner.getMap().getDisplayName())
+                            .amount(runner.getAttempts() + "")
+                            .send(e.getPlayer());
+                        runner.quitMap();
+                        return;
+                    }
+                }
+
                 if (runner.getCurrentCheckpoint() == 0) {
                     e.getPlayer().teleport(runner.getMap().getStartLocation());
                     message.checkpointName("Start").checkpointPosition(0 + "");

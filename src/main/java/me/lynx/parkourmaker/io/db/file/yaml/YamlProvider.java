@@ -435,6 +435,24 @@ public class YamlProvider implements AccessProvider {
         } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
     }
 
+    @Override
+    public void setAttempts(String name, int amount) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!mapStorage.exists()) mapStorage.mkdir();
+
+        File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
+        if (mapFile.exists()) {
+            YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
+            mapConfig.set("attempts", amount);
+
+            try {
+                mapConfig.save(mapFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
     private String loadMaps() {
         File[] maps = mapStorage.listFiles();
 
@@ -623,9 +641,11 @@ public class YamlProvider implements AccessProvider {
             if (rewardType == null) rewardType = "ALL";
             RewardType actualRewardType = RewardType.valueOf(rewardType);
 
+            int attempts = mapConfig.getInt("attempts");
+
             ParkourMap map = new ParkourMap(name, creator, checkpoints, fallzones, rewards,
                 startLocation, finishSelection, finishTeleport, signText, startMessage, finishMessage, enabled,
-                displayName, joinCooldown, rewardCooldown, actualRewardType);
+                displayName, joinCooldown, rewardCooldown, actualRewardType, attempts);
 
             map.getAllCheckpoints().forEach(checkpoint -> checkpoint.setOwningMap(map));
             map.getAllRewards().forEach(reward -> reward.setOwningMap(map));
@@ -711,6 +731,24 @@ public class YamlProvider implements AccessProvider {
         } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
     }
 
+    @Override
+    public void setRunnerAttempts(String name, int attempts) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File userFile = new File(userStorage.getAbsolutePath(), name + ".yml");
+        if (userFile.exists()) {
+            YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(userFile);
+            userConfig.set("attempts-left" , attempts);
+
+            try {
+                userConfig.save(userFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
     private String loadUsers() {
         File[] users = userStorage.listFiles();
 
@@ -742,6 +780,7 @@ public class YamlProvider implements AccessProvider {
             String name = userConfig.getString("name");
             String enteredMap = userConfig.getString("map");
             int checkpoint = userConfig.getInt("current-checkpoint");
+            int attempts = userConfig.getInt("attempts-left");
 
             List<Cooldown> cooldowns = new ArrayList<>();
             ConfigurationSection cdSection = userConfig.getConfigurationSection("cooldown");
@@ -753,7 +792,7 @@ public class YamlProvider implements AccessProvider {
                     });
                 });
             }
-            Runner runner = new Runner(name, enteredMap, checkpoint, cooldowns);
+            Runner runner = new Runner(name, enteredMap, checkpoint, attempts, cooldowns);
 
             runner.getAllCooldowns().forEach(cooldown -> cooldown.setOwningRunner(name));
             return runner;

@@ -28,6 +28,7 @@ public class ParkourMap {
     private long joinCooldown;
     private long rewardCooldown;
     private RewardType rewardType;
+    private int attempts;
 
     private final List<Checkpoint> checkpoints;
     private final List<Fallzone> fallzones;
@@ -53,6 +54,7 @@ public class ParkourMap {
         displayName = null;
         joinCooldown = 0;
         rewardCooldown = 0;
+        attempts = 0;
         rewardType = RewardType.ALL;
 
         operational = false;
@@ -65,7 +67,7 @@ public class ParkourMap {
     public ParkourMap(String name, String creator, List<Checkpoint> checkpoints, List<Fallzone> fallzones,
             List<Reward> rewards, Location startLocation, Selection finishLocation, Location finishTeleportLocation,
              SignText signText, String startMessage, String finishMessage, boolean enabled, String displayName,
-              long joinCooldown, long rewardCooldown, RewardType rewardType) {
+              long joinCooldown, long rewardCooldown, RewardType rewardType, int attempts) {
         this.name = name;
         this.creator = creator;
         this.checkpoints = checkpoints;
@@ -81,10 +83,20 @@ public class ParkourMap {
         this.joinCooldown = joinCooldown;
         this.rewardCooldown = rewardCooldown;
         this.rewardType = rewardType;
+        this.attempts = attempts;
 
         editors = new HashSet<>();
         checkIfOperational();
         this.enabled = operational && enabled;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+        ParkourMakerPlugin.instance().getStorage().setAttempts(name, attempts);
     }
 
     public void setRewardType(RewardType rewardType) {

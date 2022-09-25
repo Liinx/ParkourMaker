@@ -41,6 +41,8 @@ public interface AccessProvider {
 
     void setRewardType(String name, RewardType type);
 
+    void setAttempts(String name, int amount);
+
     ParkourMap constructMapFromStorage(String fileName);
 
     void insertRunner(String name);
@@ -50,6 +52,8 @@ public interface AccessProvider {
     void addEnteredMap(String name, String mapName);
 
     void updateCheckpoint(String name, int checkpoint);
+
+    void setRunnerAttempts(String name, int attempts);
 
     Runner constructRunnerFromStorage(String fileName);
 

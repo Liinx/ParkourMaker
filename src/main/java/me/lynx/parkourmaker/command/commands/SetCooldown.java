@@ -16,7 +16,7 @@ public class SetCooldown extends ChildCommandBase {
 
     public SetCooldown(MainCommand parentCommand) {
         super("SetCooldown", parentCommand,
-            "enter/exit edit more for certain map",
+            "sets cooldown for specified type",
             "/PM SetCooldown <Type> <Amount>",
             "parkour-maker.command.setcooldown",
             "setcd", "scd");

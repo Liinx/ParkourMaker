@@ -77,6 +77,12 @@ checkpoint-reached:
 fall-in-fallzone:
   message: 'You wore moved to %checkpoint-name% because you fell in %fallzone-name% fallzone!'
   warning: false
+lost-attempt:
+  message: 'You lost one attempt, you now have %amount% spare attempts left in this run!'
+  warning: false
+no-attempts-left:
+  message: 'You dont have any attempts left, your run has been ended better luck next time.'
+  warning: false
 map-list-tittle:
   message: 'List of all parkour maps:'
   warning: false
@@ -163,6 +169,9 @@ invalid-amount:
   warning: true
 cooldown-set:
   message: '%type% cooldown has been set to %amount%sec for %parkour-name% map!'
+  warning: false
+attempts-set:
+  message: 'Amount of attempts for %parkour-name% map has been set to %amount%.'
   warning: false
 display-name-set:
   message: '%map-display-name% has been set as display name for %parkour-name% map!'

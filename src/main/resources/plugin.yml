@@ -50,6 +50,7 @@ permissions:
       parkour-maker.command.setfinishteleport: true
       parkour-maker.command.setlobby: true
       parkour-maker.command.setrewardtype: true
+      parkour-maker.command.setattempts: true
       parkour-maker.command.setstartmessage: true
       parkour-maker.command.setstart: true
       parkour-maker.command.toggle: true
@@ -113,6 +114,8 @@ permissions:
   parkour-maker.command.setlobby:
     default: op
   parkour-maker.command.setrewardtype:
+    default: op
+  parkour-maker.command.setattempts:
     default: op
   parkour-maker.command.setstartmessage:
     default: op
