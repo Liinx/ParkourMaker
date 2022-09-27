@@ -2,8 +2,11 @@ package me.lynx.parkourmaker.io.db.access;
 
 import me.lynx.parkourmaker.model.map.*;
 import me.lynx.parkourmaker.model.runner.Cooldown;
+import me.lynx.parkourmaker.model.runner.RunTime;
 import me.lynx.parkourmaker.model.runner.Runner;
 import org.bukkit.Location;
+
+import java.util.Map;
 
 public interface AccessProvider {
 
@@ -55,8 +58,18 @@ public interface AccessProvider {
 
     void setRunnerAttempts(String name, int attempts);
 
+    void setRunTimestamps(String name, RunTime runTime);
+
+    void saveBestRunTime(String name, String mapName, String time);
+
     Runner constructRunnerFromStorage(String fileName);
 
     void onReload();
+
+    String getBestTime(String playerName, String mapName);
+
+    Map<String,String> getEveryoneBestTimes(String mapName);
+
+    Map<String,String> getAllBestTimes(String playerName);
 
 }

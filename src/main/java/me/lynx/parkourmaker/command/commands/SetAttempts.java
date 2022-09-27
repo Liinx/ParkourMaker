@@ -5,8 +5,6 @@ import me.lynx.parkourmaker.command.MainCommand;
 import me.lynx.parkourmaker.command.tabcomplete.Argument;
 import me.lynx.parkourmaker.io.message.MessageManager;
 import me.lynx.parkourmaker.model.map.ParkourMap;
-import me.lynx.parkourmaker.model.runner.CooldownType;
-import me.lynx.parkourmaker.util.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.Set;

@@ -38,7 +38,7 @@ public class List extends ChildCommandBase {
             if (!sender.hasPermission("parkour-maker.join." + name)) return;
             ParkourMap map = ParkourMakerPlugin.instance().getMapHandler().getByName(name);
 
-            Message message = MessageManager.instance().newMessage("map-list-map")
+            Message message = MessageManager.instance().newMessage("map-list-line")
                 .parkourName(map.getDisplayName() + " (" + name + ")").removePrefix();
             if (map.isEnabled()) message.send(sender);
             else {

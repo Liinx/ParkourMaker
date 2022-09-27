@@ -50,6 +50,14 @@ public class ProcessedConfigValue {
     }
 
     /**
+     * Returns color formatted papi format.
+     */
+    public String papiLeaderboardFormat() {
+        String rawFormat = ConfigValues.PAPI_LEADERBOARD_FORMAT.getValue();
+        return MessageManager.instance().translate(rawFormat == null ? "%player-name% - %run-time%" : rawFormat);
+    }
+
+    /**
      * Returns plugin message prefix formatted.
      */
     public String messagePrefix() {

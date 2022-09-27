@@ -6,10 +6,13 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
+import me.lynx.parkourmaker.io.message.MessageManager;
 import me.lynx.parkourmaker.model.map.Selection;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -45,6 +48,44 @@ public class Utils {
     }
 
     /**
+     * Parses the saved parkour run time from storage to duration which can be
+     * compared with other times.
+     */
+    public static Duration savedTimeToDuration(String time) {
+        String[] splitTime = time.split(":");
+        Duration duration = Duration.ZERO;
+
+        duration = duration.plus(Long.parseLong(splitTime[0]), ChronoUnit.HOURS);
+        duration = duration.plus(Long.parseLong(splitTime[1]), ChronoUnit.MINUTES);
+        duration = duration.plus(Long.parseLong(splitTime[2].split("\\.")[0]), ChronoUnit.SECONDS);
+        duration = duration.plus(Long.parseLong(splitTime[2].split("\\.")[1]), ChronoUnit.MILLIS);
+        return duration;
+    }
+
+    /**
+     * Parses parkour run time from millis to human readable time, which the ability to
+     * show or hide units that are zeroes.
+     */
+    public static String toReadableTime(long millis, boolean containEmptyUnits) {
+        Duration time = Duration.ofMillis(millis);
+        long h = time.toHours();
+        long m = time.toMinutesPart();
+        long s = time.toSecondsPart();
+        long ms = time.toMillisPart();
+
+        String formattedTime = String.format("%02d:%02d:%02d.%02d", h ,m ,s , ms);
+        if (containEmptyUnits) return formattedTime;
+
+        String finalTime = "";
+        if (h > 0) finalTime += h + ":";
+        if (m > 0) finalTime += m + ":";
+        if (s > 0) finalTime += s + ".";
+        if (ms > 0) finalTime += ms;
+
+        return finalTime;
+    }
+
+    /**
      * Gets multi type selection from a certain player that was made using
      * a world edit plugin.
      * If player didn't make a selection, or it is unfinished it will
@@ -69,10 +110,17 @@ public class Utils {
     }
 
     /**
-     * Checks weather a collection contains a string while ignoring case sensitivity
+     * Checks weather a collection contains a string while ignoring case sensitivity.
      */
     public static boolean ignoreCaseContains(Collection<String> collection, String string) {
         return collection.stream().anyMatch(e -> e.equalsIgnoreCase(string));
+    }
+
+    /**
+     * Checks weather a message contains a string while ignoring case sensitivity.
+     */
+    public static boolean ignoreCaseContains(String message, String string) {
+        return message.toLowerCase().contains(string.toLowerCase());
     }
 
     /**

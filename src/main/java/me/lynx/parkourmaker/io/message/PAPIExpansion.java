@@ -2,11 +2,18 @@ package me.lynx.parkourmaker.io.message;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.lynx.parkourmaker.ParkourMakerPlugin;
+import me.lynx.parkourmaker.command.commands.Time;
+import me.lynx.parkourmaker.io.file.ProcessedConfigValue;
 import me.lynx.parkourmaker.model.map.ParkourMap;
 import me.lynx.parkourmaker.model.runner.CooldownType;
 import me.lynx.parkourmaker.model.runner.Runner;
-import org.bukkit.entity.Player;
+import me.lynx.parkourmaker.util.Utils;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PAPIExpansion extends PlaceholderExpansion {
 
@@ -31,7 +38,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier(){
-        return "parkour_maker";
+        return "parkourmaker";
     }
 
     @Override
@@ -40,8 +47,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-        if (player == null) return null;
+    public @Nullable String onRequest(OfflinePlayer player, @NotNull String identifier) {
         Runner runner = ParkourMakerPlugin.instance().getRunnerHandler().getRunnerFromPlayer(player.getName());
 
         if (identifier.equals("player_name")) {
@@ -90,6 +96,44 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
         if (identifier.equals("current_checkpoint_position")) {
             return 0 + "";
+        }
+
+        AtomicReference<String> leaderboardReturn = new AtomicReference<>(null);
+        ParkourMakerPlugin.instance().getMapHandler().getAllMapNames().forEach(mapName -> {
+            if (identifier.startsWith("leaderboard_" + mapName)) {
+                try {
+                    int position = Integer.parseInt(identifier.split("\\.")[1]);
+
+                    Map<String,String> leaderboard = plugin.getStorage().getEveryoneBestTimes(mapName);
+                    Map<String,Long> sortedBoard = Time.setPlacesInOrder(leaderboard);
+                    Map.Entry<String,Long> v = sortedBoard.entrySet().stream().skip(position - 1).findFirst().orElse(null);
+                    if (v != null) leaderboardReturn.set(
+                        MessageManager.instance().newInternalMessage(
+                            ProcessedConfigValue.of().papiLeaderboardFormat())
+                                .number(position + "")
+                                .playerName(v.getKey())
+                                .runTime(Utils.toReadableTime(v.getValue(), true))
+                                .removePrefix()
+                                .colorScheme(false)
+                                .getFormattedText());
+
+                } catch (NumberFormatException e) { } /* Ignored */
+            }
+
+            if (identifier.startsWith("best_time_" + mapName)) {
+                Runner foundRunner = ParkourMakerPlugin.instance().getRunnerHandler()
+                    .getRunnerFromPlayer(identifier.split("\\.")[1]);
+                if (foundRunner != null) {
+                    String time = ParkourMakerPlugin.instance().getStorage().getBestTime(foundRunner.getName(), mapName);
+                    if (time != null) leaderboardReturn.set(time);
+                }
+            }
+
+        });
+
+        if  (identifier.startsWith("leaderboard_") || identifier.startsWith("best_time_")) {
+            if (leaderboardReturn.get() != null) return leaderboardReturn.get();
+            else return "";
         }
 
         return null;

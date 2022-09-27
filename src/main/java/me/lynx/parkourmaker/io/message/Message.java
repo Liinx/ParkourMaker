@@ -235,6 +235,12 @@ public class Message {
         return this;
     }
 
+    public Message runTime(String runTime) {
+        placeholders.add(new Placeholder("%run-time%", runTime,
+                MessageManager.instance().getColorScheme().getAlternativeText()));
+        return this;
+    }
+
     public Message ms(long ms) {
         placeholders.add(new Placeholder("%ms%", ms + "",
             MessageManager.instance().getColorScheme().getAlternativeText()));

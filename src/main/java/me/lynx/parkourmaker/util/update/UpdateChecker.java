@@ -34,6 +34,7 @@ public class UpdateChecker {
             ParkourMakerPlugin.instance().getLogger().warning("Update checker is not ready yet!");
         }
 
+        if (!ParkourMakerPlugin.instance().getAdapter().isEnabled()) return;
         Bukkit.getScheduler().runTaskAsynchronously(ParkourMakerPlugin.instance().getAdapter(), () -> {
             currentVersionString = ParkourMakerPlugin.instance().getAdapter().getDescription().getVersion();
             latestVersionString = getLatestVersion();

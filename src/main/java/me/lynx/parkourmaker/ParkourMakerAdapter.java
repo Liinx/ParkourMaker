@@ -61,11 +61,16 @@ public class ParkourMakerAdapter extends JavaPlugin {
         UpdateChecker.getInstance().check(true, null);
         enableBStats();
 
+        /* Continuing runs for all the player that stayed on during reload */
+        plugin.getRunnerHandler().continueRunsOnEnable();
+
         getLogger().info("Parkour Maker has been enabled successfully!");
     }
 
     @Override
     public void onDisable() {
+        plugin.getRunnerHandler().pauseRunsOnDisable();
+
         getLogger().info("Parkour Maker has been disabled!");
     }
 

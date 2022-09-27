@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public enum ConfigValues {
 
+    PAPI_LEADERBOARD_FORMAT("papi-leaderboard-format"),
     NOTIFY_OPERATOR_NEW_VERSION("notify-operator-new-version"),
     MESSAGE_PREFIX("message-prefix"),
     CONFIG_VERSION("config-version");

@@ -1,5 +1,10 @@
 #Welcome to the configuration file for Parkour Maker.
 
+#Sets what type of format will Placeholder API use when retrieving leaderboard times using
+# %parkourmaker_leaderboard_<map-name>.<position>% placeholder. You must use local placeholders
+#at least for this field to setting up format.
+papi-leaderboard-format: '%player-name% - %run-time%'
+
 #Prefix that will be set before every message sent in the chat.
 message-prefix: '#42473f[#75ff1fParkourMaker#42473f] &r'
 #Legacy prefix for minecraft versions below 1.16

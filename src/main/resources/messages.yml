@@ -18,6 +18,7 @@
 #%command-alias% - all command aliases
 #%cooldown% - time left for different cooldowns used
 #%amount% - relevant amount required
+#%run-time% - time it took to finish the run
 #%map-display-name% - used only for set map display name command
 
 #If set to true it will use the colors from scheme to stylize the messages,
@@ -69,7 +70,7 @@ started-map:
   message: 'You joined %parkour-name% map, good luck!'
   warning: false
 finished-map:
-  message: 'You finished %parkour-name% map, good job!'
+  message: 'You finished %parkour-name% map in %run-time% time, good job!'
   warning: false
 checkpoint-reached:
   message: 'You reached %checkpoint-name% checkpoint(%checkpoint-position%)!'
@@ -86,9 +87,30 @@ no-attempts-left:
 map-list-tittle:
   message: 'List of all parkour maps:'
   warning: false
-map-list-map:
+map-list-line:
   message: ' - %parkour-name%'
   warning: false
+map-best-time-tittle:
+  message: 'Top players with best time for %parkour-name% map:'
+  warning: false
+player-best-time-tittle:
+  message: 'Best times for %player-name%:'
+  warning: false
+map-best-time-line:
+  message: '%number%. %player-name% - %run-time%'
+  warning: false
+player-best-time-line:
+  message: '%number%. %parkour-name% - %run-time%'
+  warning: false
+player-best-time-in-map:
+  message: 'Best time for %player-name% in %parkour-name% map was %run-time%!'
+  warning: false
+player-best-time-in-map-not-found:
+  message: '%player-name% has not played that map yet!'
+  warning: false
+invalid-parkour-and-map-name:
+  message: 'Player name or parkour map has not been found!'
+  warning: true
 not-editing-map:
   message: 'You are currently not in editor mode for any map!'
   warning: true

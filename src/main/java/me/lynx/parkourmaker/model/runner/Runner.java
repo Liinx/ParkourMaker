@@ -19,6 +19,7 @@ public class Runner {
     private int currentCheckpoint;
     private int attempts;
     private final List<Cooldown> cooldowns;
+    private RunTime runTime;
 
     protected Runner(String name) {
         this.name = name;
@@ -26,20 +27,23 @@ public class Runner {
         currentCheckpoint = 0;
         attempts = 0;
         cooldowns = new ArrayList<>();
+        runTime = new RunTime(name);
     }
 
-    public Runner(String name, String enteredMap, int currentCheckpoint, int attempts, List<Cooldown> cooldowns) {
+    public Runner(String name, String enteredMap, int currentCheckpoint, int attempts, List<Cooldown> cooldowns, RunTime runTime) {
         this.name = name;
         map = ParkourMakerPlugin.instance().getMapHandler().getByName(enteredMap);
         this.currentCheckpoint = currentCheckpoint;
         this.attempts = attempts;
         this.cooldowns = cooldowns;
+        this.runTime = runTime;
     }
 
     public void joinMap(ParkourMap map) {
         this.map = map;
         ParkourMakerPlugin.instance().getStorage().addEnteredMap(name, map.getName());
         teleportToStart();
+        runTime.start();
         addCooldown(map.getName(), CooldownType.JOIN, map.getJoinCooldown());
         setAttempts(map.getAttempts());
 
@@ -80,6 +84,10 @@ public class Runner {
      */
     public int getCurrentCheckpoint() {
         return currentCheckpoint;
+    }
+
+    public RunTime getRunTime() {
+        return runTime;
     }
 
     public int getAttempts() {
@@ -123,6 +131,7 @@ public class Runner {
         map = null;
         setCurrentCheckpoint(0);
         setAttempts(0);
+        runTime.clear();
         ParkourMakerPlugin.instance().getStorage().addEnteredMap(name, null);
     }
 

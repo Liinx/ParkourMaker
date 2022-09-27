@@ -4,9 +4,7 @@ import me.lynx.parkourmaker.ParkourMakerPlugin;
 import me.lynx.parkourmaker.io.db.access.AccessProvider;
 
 import me.lynx.parkourmaker.model.map.*;
-import me.lynx.parkourmaker.model.runner.Cooldown;
-import me.lynx.parkourmaker.model.runner.CooldownType;
-import me.lynx.parkourmaker.model.runner.Runner;
+import me.lynx.parkourmaker.model.runner.*;
 import me.lynx.parkourmaker.model.sign.SignText;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -749,6 +747,50 @@ public class YamlProvider implements AccessProvider {
         } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
     }
 
+    @Override
+    public void setRunTimestamps(String name, RunTime runTime) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File userFile = new File(userStorage.getAbsolutePath(), name + ".yml");
+        if (userFile.exists()) {
+            YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(userFile);
+
+            if (runTime == null) userConfig.set("run-timestamp", null);
+            else {
+                userConfig.set("run-timestamp.start" , runTime.getStarTime());
+                userConfig.set("run-timestamp.stop" , runTime.getStopTime());
+                runTime.getBreaks().forEach(aBreak -> {
+                    userConfig.set("run-timestamp.break." + aBreak.getId() + ".pause", aBreak.getPauseTime());
+                    userConfig.set("run-timestamp.break." + aBreak.getId() + ".continue", aBreak.getContinueTime());
+                });
+            }
+            try {
+                userConfig.save(userFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
+    @Override
+    public void saveBestRunTime(String name, String mapName, String time) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File userFile = new File(userStorage.getAbsolutePath(), name + ".yml");
+        if (userFile.exists()) {
+            YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(userFile);
+            userConfig.set("best-time." + mapName , time);
+
+            try {
+                userConfig.save(userFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
     private String loadUsers() {
         File[] users = userStorage.listFiles();
 
@@ -792,12 +834,92 @@ public class YamlProvider implements AccessProvider {
                     });
                 });
             }
-            Runner runner = new Runner(name, enteredMap, checkpoint, attempts, cooldowns);
+
+            RunTime runTime = null;
+            ConfigurationSection rtSection = userConfig.getConfigurationSection("run-timestamp");
+            if (rtSection != null) {
+                long startTime = rtSection.getLong("start");
+                long stopTime = rtSection.getLong("stop");
+
+                List<TimeBreak> breaks = new ArrayList<>();
+                ConfigurationSection bSection = rtSection.getConfigurationSection("break");
+                if (bSection != null) {
+                    bSection.getKeys(false).forEach(aBreak -> {
+                        long pause = bSection.getLong(aBreak + ".pause");
+                        long aContinue = bSection.getLong(aBreak + ".continue");
+                        breaks.add(new TimeBreak(Integer.parseInt(aBreak), pause, aContinue));
+                    });
+                }
+                runTime = new RunTime(name, startTime, stopTime, breaks);
+            }
+            if (runTime == null) runTime = new RunTime(name);
+            Runner runner = new Runner(name, enteredMap, checkpoint, attempts, cooldowns ,runTime);
 
             runner.getAllCooldowns().forEach(cooldown -> cooldown.setOwningRunner(name));
+            runner.getRunTime().getBreaks().forEach(aBreak -> aBreak.setOwningTime(runner.getRunTime()));
             return runner;
         } else {
             ParkourMakerPlugin.instance().getLogger().warning("Could not load " + fileName + " file!");
+            return null;
+        }
+    }
+
+    @Override
+    public String getBestTime(String playerName, String mapName) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File userFile = new File(userStorage.getAbsolutePath(), playerName + ".yml");
+        if (userFile.exists()) {
+            YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(userFile);
+            return userConfig.getString("best-time." + mapName);
+        } else {
+            ParkourMakerPlugin.instance().getLogger().warning("Could not read " + playerName + ".yml file!");
+            return null;
+        }
+    }
+
+    @Override
+    public Map<String,String> getEveryoneBestTimes(String mapName) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        Map<String,String> leaderboard = new HashMap<>();
+        File[] users = userStorage.listFiles();
+        for (File file : users) {
+            if (file.isDirectory()) continue;
+            if (file.isFile()) {
+                YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(file);
+                String name = userConfig.getString("name");
+                String bestTime = userConfig.getString("best-time." + mapName);
+                leaderboard.put(name, bestTime);
+            }
+        }
+
+        return leaderboard;
+    }
+
+    @Override
+    public Map<String,String> getAllBestTimes(String playerName) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File userFile = new File(userStorage.getAbsolutePath(), playerName + ".yml");
+        if (userFile.exists()) {
+            YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(userFile);
+            Map<String,String> leaderboard = new HashMap<>();
+
+            ConfigurationSection btSection = userConfig.getConfigurationSection("best-time");
+            if (btSection != null) {
+                btSection.getKeys(false).forEach(mapName -> {
+                    String bestTime = btSection.getString(mapName);
+                    leaderboard.put(mapName, bestTime);
+                });
+            }
+
+            return leaderboard;
+        } else {
+            ParkourMakerPlugin.instance().getLogger().warning("Could not read " + playerName + ".yml file!");
             return null;
         }
     }

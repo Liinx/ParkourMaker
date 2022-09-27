@@ -14,7 +14,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +32,38 @@ public class RunnerHandler implements Listener {
 
     public RunnerHandler() {
         runners = new HashSet<>();
+    }
+
+    public void pauseRunsOnDisable() {
+        runners.stream()
+            .filter(runner -> isInMap(runner.getName()))
+            .forEach(runner -> {
+                if (!runner.getRunTime().containsUnfinishedBreaks()) runner.getRunTime().pause();
+                ParkourMakerPlugin.instance().getStorage().setRunTimestamps(runner.getName(), runner.getRunTime());
+            });
+    }
+
+    public void continueRunsOnEnable() {
+        runners.stream()
+            .filter(runner -> isInMap(runner.getName()))
+            .filter(runner -> runner.getPlayer() != null)
+            .forEach(runner -> {
+                runner.getRunTime().continueTime();
+            });
+    }
+
+    @EventHandler
+    public void onPause(PlayerQuitEvent e) {
+        if (!isInMap(e.getPlayer().getName())) return;
+        Runner runner = getRunnerFromPlayer(e.getPlayer().getName());
+        runner.getRunTime().pause();
+    }
+
+    @EventHandler
+    public void onContinue(PlayerJoinEvent e) {
+        if (!isInMap(e.getPlayer().getName())) return;
+        Runner runner = getRunnerFromPlayer(e.getPlayer().getName());
+        runner.getRunTime().continueTime();
     }
 
     public Runner addRunner(Player player) {
@@ -77,6 +111,7 @@ public class RunnerHandler implements Listener {
             if (finishTeleport != null) e.getPlayer().teleport(finishTeleport);
             else e.getPlayer().teleport(lobbyLoc);
 
+            runner.getRunTime().stop();
             Cooldown cooldown = runner.getCooldown(map.getName(), CooldownType.REWARD);
             if (!e.getPlayer().hasPermission("parkour-maker.ignore-cooldown.reward") &&
                 (cooldown != null && !cooldown.cooldownExpired())) {
@@ -116,6 +151,7 @@ public class RunnerHandler implements Listener {
                     .playerName(runner.getName()));
             }
             MessageManager.instance().newMessage("finished-map")
+                .runTime(runner.getRunTime().getTime(false))
                 .parkourName(runner.getMap().getDisplayName()).send(e.getPlayer());
             runner.quitMap();
         }
