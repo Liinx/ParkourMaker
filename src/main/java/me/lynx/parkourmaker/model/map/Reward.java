@@ -34,7 +34,8 @@ public class Reward {
     }
 
     private int generateID() {
-        return owningMap.getAllRewards().size() + 1;
+        if (owningMap.getAllRewards().size() < 1) return 1;
+        return owningMap.getAllRewards().stream().map(Reward::getId).mapToInt(v -> v).max().getAsInt() + 1;
     }
 
 }

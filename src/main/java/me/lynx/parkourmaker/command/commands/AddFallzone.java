@@ -36,12 +36,6 @@ public class AddFallzone extends ChildCommandBase {
         if (inEditorMode(sender, true) == null) return;
         ParkourMap map = inEditorMode(sender);
 
-        StringBuffer sb = new StringBuffer();
-        for (int i = 1; i < args.length; i++) {
-            sb.append(args[i]);
-            if (i != (args.length - 1)) sb.append(" ");
-        }
-
         String name = Utils.argsToMessage(args, 1);
         Player player = (Player) sender;
         Selection selection = Utils.getSelection(player);

@@ -15,7 +15,7 @@ public class SetStartMessage extends ChildCommandBase {
     public SetStartMessage(MainCommand parentCommand) {
         super("SetStartMessage", parentCommand,
             "sets start message for parkour map",
-            "/PM SetStartMessage <Message>",
+            "/PM SetStartMessage [Message]",
             "parkour-maker.command.setstartmessage",
             "ssmsg");
     }

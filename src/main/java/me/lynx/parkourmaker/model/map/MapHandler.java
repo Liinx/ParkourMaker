@@ -45,4 +45,17 @@ public class MapHandler {
         return supplier.get().findFirst().get();
     }
 
+    public void deleteMap(String mapName) {
+        parkourMaps.removeIf(parkourMap -> parkourMap.getName().equals(mapName));
+        ProcessedConfigValue.of().mapPermissions().removeMap(mapName);
+        ParkourMakerPlugin.instance().getStorage().deleteMap(mapName);
+        deleteMapCooldowns(mapName);
+    }
+
+    private void deleteMapCooldowns(String mapName) {
+        ParkourMakerPlugin.instance().getRunnerHandler().getAllRunners().forEach(runner ->
+            runner.removeMapCooldowns(mapName));
+        ParkourMakerPlugin.instance().getStorage().deleteCooldownForAll(mapName);
+    }
+
 }

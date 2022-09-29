@@ -14,4 +14,4 @@ message-prefix: '#42473f[#75ff1fParkourMaker#42473f] &r'
 notify-operator-new-version: true
 
 #DO NOT change these value!
-config-version: 2
+config-version: 3

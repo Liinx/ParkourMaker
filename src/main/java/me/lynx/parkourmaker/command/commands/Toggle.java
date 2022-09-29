@@ -41,8 +41,10 @@ public class Toggle extends ChildCommandBase {
 
         if (parkourMap.isEnabled()) {
             parkourMap.disable();
+            ParkourMakerPlugin.instance().getRunnerHandler().removeAllFromMap(parkourMap.getName());
             MessageManager.instance().newMessage("set-map-disabled")
-                .parkourName(parkourMap.getDisplayName()).send(sender);
+                .parkourName(parkourMap.getDisplayName())
+                .playerName(sender.getName()).send(sender);
         } else {
             if (parkourMap.enable()) MessageManager.instance().newMessage("set-map-enabled")
                 .parkourName(parkourMap.getDisplayName()).send(sender);

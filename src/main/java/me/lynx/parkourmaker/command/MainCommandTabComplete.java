@@ -1,5 +1,8 @@
 package me.lynx.parkourmaker.command;
 
+import me.lynx.parkourmaker.ParkourMakerPlugin;
+import me.lynx.parkourmaker.model.map.Fallzone;
+import me.lynx.parkourmaker.model.map.ParkourMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -7,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,21 +50,7 @@ public class MainCommandTabComplete implements TabCompleter {
                     if (currentArg + 1 != args.length) return;
 
                     Set<String> possibilities = argument.getPossibilities();
-
-                    /* Exclusive only for help command to handle permissions */
-                    if (cmd.getName().equalsIgnoreCase("help")) {
-                        possibilities = possibilities.stream()
-                            .filter(possibility ->
-                            sender.hasPermission(cmd.getParentCommand().getCommandByName(possibility).getPermission()))
-                            .collect(Collectors.toSet());
-                    }
-                    /* Exclusive only for join command to handle permissions */
-                    if (cmd.getName().equalsIgnoreCase("join")) {
-                        possibilities = possibilities.stream()
-                            .filter(possibility ->
-                            sender.hasPermission("parkour-maker.join." + possibility))
-                            .collect(Collectors.toSet());
-                    }
+                    possibilities = modifyPossibilitiesInSpecialEvents(possibilities, sender, cmd, args, currentArg);
 
                     if (args[currentArg].equals("")) returnList.addAll(possibilities);
                     else possibilities.stream()
@@ -69,7 +59,7 @@ public class MainCommandTabComplete implements TabCompleter {
                 });
             });
 
-
+            /* does the same thing as above code only for cmd aliases */
             if (!foundCmd.get()) {
                 commands.forEach(cmd -> {
                     if (cmd.onTabComplete() == null) return;
@@ -82,6 +72,7 @@ public class MainCommandTabComplete implements TabCompleter {
                             if (currentArg + 1 != args.length) return;
 
                             Set<String> possibilities = argument.getPossibilities();
+                            possibilities = modifyPossibilitiesInSpecialEvents(possibilities, sender, cmd, args, currentArg);
                             if (args[currentArg].equals("")) returnList.addAll(possibilities);
                             else possibilities.stream()
                                 .filter(possibility -> possibility.toLowerCase().startsWith(args[currentArg].toLowerCase()))
@@ -93,6 +84,41 @@ public class MainCommandTabComplete implements TabCompleter {
         }
 
         return returnList;
+    }
+
+    private Set<String> modifyPossibilitiesInSpecialEvents(Set<String> possibilities, CommandSender sender,
+                                                           ChildCommand cmd, String[] args, int currentArg) {
+        /* Exclusive only for help command to handle permissions */
+        if (cmd.getName().equalsIgnoreCase("help")) {
+            possibilities = possibilities.stream()
+                .filter(possibility ->
+                    sender.hasPermission(cmd.getParentCommand().getCommandByName(possibility).getPermission()))
+                .collect(Collectors.toSet());
+        }
+        /* Exclusive only for join command to handle permissions */
+        if (cmd.getName().equalsIgnoreCase("join")) {
+            possibilities = possibilities.stream()
+                .filter(possibility -> sender.hasPermission("parkour-maker.join." + possibility))
+                .collect(Collectors.toSet());
+        }
+        /* Exclusive only for delete command to handle previous args */
+        if (cmd.getName().equalsIgnoreCase("delete") && currentArg == 2) {
+            ParkourMap map = ParkourMakerPlugin.instance().getMapHandler().getEditedMap(sender.getName());
+            if (map == null) return possibilities;
+
+            if (args[1].equalsIgnoreCase("FinishTeleport")) possibilities = new HashSet<>();
+            else if (args[1].equalsIgnoreCase("Checkpoint")) {
+                possibilities = map.getAllCheckpoints().stream()
+                    .map(checkpoint -> checkpoint.getPosition() + "").collect(Collectors.toSet());
+            } else if (args[1].equalsIgnoreCase("Fallzone")) {
+                possibilities = map.getAllFallzones().stream()
+                    .map(Fallzone::getName).collect(Collectors.toSet());
+            } else if (args[1].equalsIgnoreCase("Reward")) {
+                possibilities = map.getAllRewards().stream()
+                    .map(reward -> reward.getId() + "").collect(Collectors.toSet());
+            } else if (args[1].equalsIgnoreCase("Map")) possibilities = new HashSet<>();
+        }
+        return possibilities;
     }
 
 }

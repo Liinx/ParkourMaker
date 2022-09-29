@@ -50,6 +50,8 @@ public class MainCommand  implements CommandExecutor, ParentCommand {
         commands.add(new SetRewardType(this));
         commands.add(new SetAttempts(this));
         commands.add(new Time(this));
+        commands.add(new Info(this));
+        commands.add(new Delete(this));
     }
 
     @Override

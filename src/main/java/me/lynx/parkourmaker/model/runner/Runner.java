@@ -19,7 +19,7 @@ public class Runner {
     private int currentCheckpoint;
     private int attempts;
     private final List<Cooldown> cooldowns;
-    private RunTime runTime;
+    private final RunTime runTime;
 
     protected Runner(String name) {
         this.name = name;
@@ -44,7 +44,7 @@ public class Runner {
         ParkourMakerPlugin.instance().getStorage().addEnteredMap(name, map.getName());
         teleportToStart();
         runTime.start();
-        addCooldown(map.getName(), CooldownType.JOIN, map.getJoinCooldown());
+        addCooldown(map.getName(), CooldownType.JOIN);
         setAttempts(map.getAttempts());
 
         if (map.getStartMessage() != null) {
@@ -56,7 +56,7 @@ public class Runner {
         }
     }
 
-    public void addCooldown(String mapName, CooldownType type, long amount) {
+    public void addCooldown(String mapName, CooldownType type) {
         Cooldown foundCooldown = getCooldown(mapName, type);
         if (foundCooldown == null) {
             foundCooldown = new Cooldown(name, mapName, type);
@@ -72,6 +72,10 @@ public class Runner {
 
         if (supplier.get().findAny().isEmpty()) return null;
         return supplier.get().findFirst().get();
+    }
+
+    public void removeMapCooldowns(String mapName) {
+        cooldowns.removeIf(cooldown -> cooldown.getMapName().equals(mapName));
     }
 
     public void setCurrentCheckpoint(int currentCheckpoint) {

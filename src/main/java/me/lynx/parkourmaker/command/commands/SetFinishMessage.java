@@ -15,7 +15,7 @@ public class SetFinishMessage extends ChildCommandBase {
     public SetFinishMessage(MainCommand parentCommand) {
         super("SetFinishMessage", parentCommand,
             "sets start message for parkour map",
-            "/PM SetFinishMessage <Message>",
+            "/PM SetFinishMessage [Message]",
             "parkour-maker.command.setfinishmessage",
             "sfmsg");
     }

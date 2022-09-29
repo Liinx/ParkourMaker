@@ -118,6 +118,10 @@ public class ParkourMap {
         else return name;
     }
 
+    public String getCreator() {
+        return creator;
+    }
+
     public void setJoinCooldown(long joinCooldown) {
         this.joinCooldown = joinCooldown;
         ParkourMakerPlugin.instance().getStorage().setJoinCooldown(name, joinCooldown);
@@ -178,13 +182,20 @@ public class ParkourMap {
     }
 
     public void setStartMessage(String startMessage) {
+        if (startMessage.isEmpty()) startMessage = null;
         this.startMessage = startMessage;
         ParkourMakerPlugin.instance().getStorage().setStartMessage(name, startMessage);
     }
 
     public void setFinishMessage(String finishMessage) {
+        if (finishMessage.isEmpty()) finishMessage = null;
         this.finishMessage = finishMessage;
         ParkourMakerPlugin.instance().getStorage().setFinishMessage(name, finishMessage);
+    }
+
+    public void removeCheckpoint(int position) {
+        checkpoints.removeIf(cp -> cp.getPosition() == position);
+        ParkourMakerPlugin.instance().getStorage().deleteCheckpoint(name, position);
     }
 
     public void addCheckpoint(Checkpoint checkpoint) {
@@ -204,14 +215,31 @@ public class ParkourMap {
         return supplier.get().findFirst().get();
     }
 
+    public void removeFallzone(String zoneName) {
+        fallzones.removeIf(fz -> fz.getName().equalsIgnoreCase(zoneName));
+        ParkourMakerPlugin.instance().getStorage().deleteFallzone(name, zoneName);
+    }
+
     public void addFallzone(Fallzone fallzone) {
         fallzones.removeIf(fz -> fz.getName().equalsIgnoreCase(fallzone.getName()));
         fallzones.add(fallzone);
         ParkourMakerPlugin.instance().getStorage().addFallzone(name, fallzone);
     }
 
+    public Fallzone getFallzone(String zoneName) {
+        Supplier<Stream<Fallzone>> supplier = () -> fallzones.stream()
+            .filter(fz -> fz.getName().equals(zoneName));
+        if (supplier.get().findAny().isEmpty()) return null;
+        return supplier.get().findFirst().get();
+    }
+
     public List<Fallzone> getAllFallzones() {
         return fallzones;
+    }
+
+    public void removeReward(int id) {
+        rewards.removeIf(reward -> reward.getId() == id);
+        ParkourMakerPlugin.instance().getStorage().deleteReward(name, id);
     }
 
     public void addReward(String command) {
@@ -226,7 +254,7 @@ public class ParkourMap {
 
     public Reward getReward(int id) {
         Supplier<Stream<Reward>> supplier = () -> rewards.stream()
-                .filter(rew -> rew.getId() == id);
+            .filter(rew -> rew.getId() == id);
         if (supplier.get().findAny().isEmpty()) return null;
         return supplier.get().findFirst().get();
     }

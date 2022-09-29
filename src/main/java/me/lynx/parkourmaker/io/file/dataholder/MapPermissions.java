@@ -28,6 +28,14 @@ public class MapPermissions {
         }
     }
 
+    public void removeMap(String mapName) {
+        Permission permission = Bukkit.getPluginManager().getPermission("parkour-maker.join." + mapName);
+        if (permission != null) {
+            maps.removeIf(perm -> perm.getName().equals(permission.getName()));
+            Bukkit.getPluginManager().removePermission(permission);
+        }
+    }
+
     public void loadPermissions() {
         ParkourMakerPlugin.instance().getMapHandler().getAllMapNames().forEach(this::addNewMap);
 

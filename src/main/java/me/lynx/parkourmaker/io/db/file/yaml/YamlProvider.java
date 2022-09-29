@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -121,6 +122,21 @@ public class YamlProvider implements AccessProvider {
     }
 
     @Override
+    public void deleteMap(String name) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!mapStorage.exists()) mapStorage.mkdir();
+
+        File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
+        if (mapFile.exists()) {
+            try {
+                Files.delete(mapFile.getAbsoluteFile().toPath());
+            } catch (IOException e) {
+                plugin.getLogger().warning("Could not delete " + name + ".yml file!");
+            }
+        }
+    }
+
+    @Override
     public void setStartLocation(String name, Location location) {
         if (!yamlStorage.exists()) yamlStorage.mkdir();
         if (!mapStorage.exists()) mapStorage.mkdir();
@@ -183,14 +199,17 @@ public class YamlProvider implements AccessProvider {
 
         File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
         if (mapFile.exists()) {
-            DecimalFormat df = new DecimalFormat("0.00");
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
-            mapConfig.set("finish-location.teleport.x", Double.parseDouble(df.format(location.getX())));
-            mapConfig.set("finish-location.teleport.y", Double.parseDouble(df.format(location.getY())));
-            mapConfig.set("finish-location.teleport.z", Double.parseDouble(df.format(location.getZ())));
-            mapConfig.set("finish-location.teleport.yaw", Double.parseDouble(df.format(location.getYaw())));
-            mapConfig.set("finish-location.teleport.pitch", Double.parseDouble(df.format(location.getPitch())));
-            mapConfig.set("finish-location.teleport.world", location.getWorld().getName());
+            if (location == null) mapConfig.set("finish-location.teleport", null);
+            else {
+                DecimalFormat df = new DecimalFormat("0.00");
+                mapConfig.set("finish-location.teleport.x", Double.parseDouble(df.format(location.getX())));
+                mapConfig.set("finish-location.teleport.y", Double.parseDouble(df.format(location.getY())));
+                mapConfig.set("finish-location.teleport.z", Double.parseDouble(df.format(location.getZ())));
+                mapConfig.set("finish-location.teleport.yaw", Double.parseDouble(df.format(location.getYaw())));
+                mapConfig.set("finish-location.teleport.pitch", Double.parseDouble(df.format(location.getPitch())));
+                mapConfig.set("finish-location.teleport.world", location.getWorld().getName());
+            }
             try {
                 mapConfig.save(mapFile);
             } catch (IOException e) {
@@ -246,6 +265,24 @@ public class YamlProvider implements AccessProvider {
     }
 
     @Override
+    public void deleteCheckpoint(String name, int position) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!mapStorage.exists()) mapStorage.mkdir();
+
+        File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
+        if (mapFile.exists()) {
+            YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
+            mapConfig.set("checkpoint." + position, null);
+
+            try {
+                mapConfig.save(mapFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
+    @Override
     public void addFallzone(String name, Fallzone fallzone) {
         if (!yamlStorage.exists()) yamlStorage.mkdir();
         if (!mapStorage.exists()) mapStorage.mkdir();
@@ -272,6 +309,23 @@ public class YamlProvider implements AccessProvider {
     }
 
     @Override
+    public void deleteFallzone(String name, String zoneName) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!mapStorage.exists()) mapStorage.mkdir();
+
+        File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
+        if (mapFile.exists()) {
+            YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
+            mapConfig.set("fallzone." + zoneName, null);
+            try {
+                mapConfig.save(mapFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
+    @Override
     public void addReward(String name, Reward reward) {
         if (!yamlStorage.exists()) yamlStorage.mkdir();
         if (!mapStorage.exists()) mapStorage.mkdir();
@@ -280,6 +334,24 @@ public class YamlProvider implements AccessProvider {
         if (mapFile.exists()) {
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
             mapConfig.set("reward." + reward.getId(), reward.getCommand());
+
+            try {
+                mapConfig.save(mapFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+    }
+
+    @Override
+    public void deleteReward(String name, int id) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!mapStorage.exists()) mapStorage.mkdir();
+
+        File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
+        if (mapFile.exists()) {
+            YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
+            mapConfig.set("reward." + id, null);
 
             try {
                 mapConfig.save(mapFile);
@@ -861,6 +933,28 @@ public class YamlProvider implements AccessProvider {
         } else {
             ParkourMakerPlugin.instance().getLogger().warning("Could not load " + fileName + " file!");
             return null;
+        }
+    }
+
+    @Override
+    public void deleteCooldownForAll(String name) {
+        if (!yamlStorage.exists()) yamlStorage.mkdir();
+        if (!userStorage.exists()) userStorage.mkdir();
+
+        File[] users = userStorage.listFiles();
+        for (File file : users) {
+            if (file.isDirectory()) continue;
+            if (file.isFile()) {
+                YamlConfiguration userConfig = YamlConfiguration.loadConfiguration(file);
+                userConfig.set("cooldown." + name, null);
+
+                try {
+                    userConfig.save(file);
+                } catch (IOException e) {
+                    ParkourMakerPlugin.instance().getLogger().warning("Could not save info to " + name + " .yml file!");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

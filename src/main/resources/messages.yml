@@ -19,6 +19,7 @@
 #%cooldown% - time left for different cooldowns used
 #%amount% - relevant amount required
 #%run-time% - time it took to finish the run
+#%identifier% - identifier used in delete command
 #%map-display-name% - used only for set map display name command
 
 #If set to true it will use the colors from scheme to stylize the messages,
@@ -135,6 +136,9 @@ invalid-line:
 invalid-number:
   message: '%number% is not a valid number!'
   warning: true
+invalid-name:
+  message: '%fallzone-name% is not a valid name!'
+  warning: true
 checkpoint-added:
   message: '%checkpoint-name% checkpoint set on position %checkpoint-position% for %parkour-name% map!'
   warning: false
@@ -165,6 +169,12 @@ already-editing-another-map:
 edit-mode-deactivated:
   message: 'You are no longer in editor mode for %parkour-name% map!'
   warning: false
+feature-deleted:
+  message: '%identifier% %type% has been deleted!'
+  warning: false
+map-delete-security-check:
+  message: 'This action cannot be undone, are you sure you want to delete %parkour-name% map? If yes type the command again(30 sec timer).'
+  warning: true
 invalid-command:
   message: '%command% is not a valid command!'
   warning: true

@@ -241,6 +241,12 @@ public class Message {
         return this;
     }
 
+    public Message identifier(String identifier) {
+        placeholders.add(new Placeholder("%identifier%", identifier,
+                MessageManager.instance().getColorScheme().getAlternativeText()));
+        return this;
+    }
+
     public Message ms(long ms) {
         placeholders.add(new Placeholder("%ms%", ms + "",
             MessageManager.instance().getColorScheme().getAlternativeText()));

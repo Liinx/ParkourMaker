@@ -55,6 +55,8 @@ permissions:
       parkour-maker.command.setstart: true
       parkour-maker.command.toggle: true
       parkour-maker.command.time: true
+      parkour-maker.command.info: true
+      parkour-maker.command.delete: true
       parkour-maker.command.list.seedisabled: true
   parkour-maker.sign.*:
     default: op
@@ -126,3 +128,7 @@ permissions:
     default: op
   parkour-maker.command.time:
     default: true
+  parkour-maker.command.info:
+    default: true
+  parkour-maker.command.delete:
+    default: op

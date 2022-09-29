@@ -16,6 +16,8 @@ public interface AccessProvider {
 
     void createNewMap(String name, String creator);
 
+    void deleteMap(String name);
+
     void setStartLocation(String name, Location location);
 
     void setFinishLocation(String name, Selection selection);
@@ -24,9 +26,15 @@ public interface AccessProvider {
 
     void addCheckpoint(String name, Checkpoint checkpoint);
 
+    void deleteCheckpoint(String name, int position);
+
     void addFallzone(String name, Fallzone fallzone);
 
+    void deleteFallzone(String name, String zoneName);
+
     void addReward(String name, Reward reward);
+
+    void deleteReward(String name, int id);
 
     void setStartMessage(String name, String message);
 
@@ -41,6 +49,8 @@ public interface AccessProvider {
     void setRewardCooldown(String name, long amount);
 
     void setJoinCooldown(String name, long amount);
+
+    void deleteCooldownForAll(String name);
 
     void setRewardType(String name, RewardType type);
 

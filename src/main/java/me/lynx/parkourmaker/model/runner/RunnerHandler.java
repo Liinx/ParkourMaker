@@ -11,6 +11,7 @@ import me.lynx.parkourmaker.model.map.*;
 import me.lynx.parkourmaker.util.TitleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +33,10 @@ public class RunnerHandler implements Listener {
 
     public RunnerHandler() {
         runners = new HashSet<>();
+    }
+
+    public Set<Runner> getAllRunners() {
+        return runners;
     }
 
     public void pauseRunsOnDisable() {
@@ -97,6 +102,21 @@ public class RunnerHandler implements Listener {
         return runner.getMap() != null;
     }
 
+    public void removeAllFromMap(String mapName) {
+        Location lobbyLoc = ParkourMakerPlugin.instance().getStorage().getLobbyLocation();
+        runners.stream()
+            .filter(runner -> runner.getMap() != null)
+            .filter(runner -> runner.getMap().getName().equals(mapName))
+            .forEach(runner -> {
+                Player player = runner.getPlayer();
+                if (player != null) {
+                    player.teleport(lobbyLoc);
+                    MessageManager.instance().newMessage("teleported-to-lobby").send(player);
+                }
+                runner.quitMap();
+            });
+    }
+
     @EventHandler
     private void onFinishLine(PlayerMoveEvent e) {
         if (!isInMap(e.getPlayer().getName())) return;
@@ -140,7 +160,7 @@ public class RunnerHandler implements Listener {
                             .colorScheme(false)
                             .getFormattedText());
                 }
-                runner.addCooldown(map.getName(), CooldownType.REWARD, map.getRewardCooldown());
+                runner.addCooldown(map.getName(), CooldownType.REWARD);
             }
 
             if (map.getFinishMessage() != null) {
