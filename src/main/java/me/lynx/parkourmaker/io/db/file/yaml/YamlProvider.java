@@ -6,6 +6,7 @@ import me.lynx.parkourmaker.io.db.access.AccessProvider;
 import me.lynx.parkourmaker.model.map.*;
 import me.lynx.parkourmaker.model.runner.*;
 import me.lynx.parkourmaker.model.sign.SignText;
+import me.lynx.parkourmaker.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +14,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class YamlProvider implements AccessProvider {
@@ -47,22 +47,21 @@ public class YamlProvider implements AccessProvider {
     @Override
     public void setLobbyLocation(double x, double y, double z, float yaw, float pitch, String worldName) {
         if (!yamlStorage.exists()) yamlStorage.mkdir();
-        DecimalFormat df = new DecimalFormat("0.00");
 
         if (!lobbyLocStorage.exists()) {
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(lobbyLocStorage),
                     "UTF-8"))) {
                 lobbyLocStorage.createNewFile();
 
-                bw.write("x: " + df.format(x));
+                bw.write("x: " + Utils.roundToTwo(x));
                 bw.newLine();
-                bw.write("y: " + df.format(y));
+                bw.write("y: " +  Utils.roundToTwo(y));
                 bw.newLine();
-                bw.write("z: " + df.format(z));
+                bw.write("z: " +  Utils.roundToTwo(z));
                 bw.newLine();
-                bw.write("yaw: " + df.format(yaw));
+                bw.write("yaw: " +  Utils.roundToTwo(yaw));
                 bw.newLine();
-                bw.write("pitch: " + df.format(pitch));
+                bw.write("pitch: " +  Utils.roundToTwo(pitch));
                 bw.newLine();
                 bw.write("world: " + "'" + worldName + "'");
             } catch (IOException e) {
@@ -70,11 +69,11 @@ public class YamlProvider implements AccessProvider {
             }
         } else {
             YamlConfiguration lobbyLoc = YamlConfiguration.loadConfiguration(lobbyLocStorage);
-            lobbyLoc.set("x", Double.parseDouble(df.format(x)));
-            lobbyLoc.set("y", Double.parseDouble(df.format(y)));
-            lobbyLoc.set("z", Double.parseDouble(df.format(z)));
-            lobbyLoc.set("yaw", Double.parseDouble(df.format(yaw)));
-            lobbyLoc.set("pitch", Double.parseDouble(df.format(pitch)));
+            lobbyLoc.set("x", Utils.roundToTwo(x));
+            lobbyLoc.set("y", Utils.roundToTwo(y));
+            lobbyLoc.set("z", Utils.roundToTwo(z));
+            lobbyLoc.set("yaw", Utils.roundToTwo(yaw));
+            lobbyLoc.set("pitch", Utils.roundToTwo(pitch));
             lobbyLoc.set("world", worldName);
             try {
                 lobbyLoc.save(lobbyLocStorage);
@@ -143,13 +142,12 @@ public class YamlProvider implements AccessProvider {
 
         File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
         if (mapFile.exists()) {
-            DecimalFormat df = new DecimalFormat("0.00");
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
-            mapConfig.set("start-location.x", Double.parseDouble(df.format(location.getX())));
-            mapConfig.set("start-location.y", Double.parseDouble(df.format(location.getY())));
-            mapConfig.set("start-location.z", Double.parseDouble(df.format(location.getZ())));
-            mapConfig.set("start-location.yaw", Double.parseDouble(df.format(location.getYaw())));
-            mapConfig.set("start-location.pitch", Double.parseDouble(df.format(location.getPitch())));
+            mapConfig.set("start-location.x", Utils.roundToTwo(location.getX()));
+            mapConfig.set("start-location.y", Utils.roundToTwo(location.getY()));
+            mapConfig.set("start-location.z", Utils.roundToTwo(location.getZ()));
+            mapConfig.set("start-location.yaw", Utils.roundToTwo(location.getYaw()));
+            mapConfig.set("start-location.pitch", Utils.roundToTwo(location.getPitch()));
             mapConfig.set("start-location.world", location.getWorld().getName());
             try {
                 mapConfig.save(mapFile);
@@ -166,21 +164,20 @@ public class YamlProvider implements AccessProvider {
 
         File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
         if (mapFile.exists()) {
-            DecimalFormat df = new DecimalFormat("0.00");
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
             mapConfig.set("finish-location.type", selection.getType().name());
 
             if (selection.getType() == SelectionType.SINGLE) {
-                mapConfig.set("finish-location.x", Double.parseDouble(df.format(selection.getStartPoint().getX())));
-                mapConfig.set("finish-location.y", Double.parseDouble(df.format(selection.getStartPoint().getY())));
-                mapConfig.set("finish-location.z", Double.parseDouble(df.format(selection.getStartPoint().getZ())));
+                mapConfig.set("finish-location.x", Utils.roundToTwo(selection.getStartPoint().getX()));
+                mapConfig.set("finish-location.y", Utils.roundToTwo(selection.getStartPoint().getY()));
+                mapConfig.set("finish-location.z", Utils.roundToTwo(selection.getStartPoint().getZ()));
             } else if (selection.getType() == SelectionType.MULTI) {
-                mapConfig.set("finish-location.min.x", Double.parseDouble(df.format(selection.getStartPoint().getX())));
-                mapConfig.set("finish-location.min.y", Double.parseDouble(df.format(selection.getStartPoint().getY())));
-                mapConfig.set("finish-location.min.z", Double.parseDouble(df.format(selection.getStartPoint().getZ())));
-                mapConfig.set("finish-location.max.x", Double.parseDouble(df.format(selection.getEndPoint().getX())));
-                mapConfig.set("finish-location.max.y", Double.parseDouble(df.format(selection.getEndPoint().getY())));
-                mapConfig.set("finish-location.max.z", Double.parseDouble(df.format(selection.getEndPoint().getZ())));
+                mapConfig.set("finish-location.min.x", Utils.roundToTwo(selection.getStartPoint().getX()));
+                mapConfig.set("finish-location.min.y", Utils.roundToTwo(selection.getStartPoint().getY()));
+                mapConfig.set("finish-location.min.z", Utils.roundToTwo(selection.getStartPoint().getZ()));
+                mapConfig.set("finish-location.max.x", Utils.roundToTwo(selection.getEndPoint().getX()));
+                mapConfig.set("finish-location.max.y", Utils.roundToTwo(selection.getEndPoint().getY()));
+                mapConfig.set("finish-location.max.z", Utils.roundToTwo(selection.getEndPoint().getZ()));
             }
             mapConfig.set("finish-location.world", selection.getStartPoint().getWorld().getName());
 
@@ -202,12 +199,11 @@ public class YamlProvider implements AccessProvider {
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
             if (location == null) mapConfig.set("finish-location.teleport", null);
             else {
-                DecimalFormat df = new DecimalFormat("0.00");
-                mapConfig.set("finish-location.teleport.x", Double.parseDouble(df.format(location.getX())));
-                mapConfig.set("finish-location.teleport.y", Double.parseDouble(df.format(location.getY())));
-                mapConfig.set("finish-location.teleport.z", Double.parseDouble(df.format(location.getZ())));
-                mapConfig.set("finish-location.teleport.yaw", Double.parseDouble(df.format(location.getYaw())));
-                mapConfig.set("finish-location.teleport.pitch", Double.parseDouble(df.format(location.getPitch())));
+                mapConfig.set("finish-location.teleport.x", Utils.roundToTwo(location.getX()));
+                mapConfig.set("finish-location.teleport.y", Utils.roundToTwo(location.getY()));
+                mapConfig.set("finish-location.teleport.z", Utils.roundToTwo(location.getZ()));
+                mapConfig.set("finish-location.teleport.yaw", Utils.roundToTwo(location.getYaw()));
+                mapConfig.set("finish-location.teleport.pitch", Utils.roundToTwo(location.getPitch()));
                 mapConfig.set("finish-location.teleport.world", location.getWorld().getName());
             }
             try {
@@ -225,7 +221,6 @@ public class YamlProvider implements AccessProvider {
 
         File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
         if (mapFile.exists()) {
-            DecimalFormat df = new DecimalFormat("0.00");
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
             int pos = checkpoint.getPosition();
 
@@ -234,24 +229,24 @@ public class YamlProvider implements AccessProvider {
             mapConfig.set("checkpoint." + pos + ".type", checkpoint.getType().name());
 
             if (checkpoint.getType() == SelectionType.SINGLE) {
-                mapConfig.set("checkpoint." + pos + ".x", Double.parseDouble(df.format(checkpoint.getStartPoint().getX())));
-                mapConfig.set("checkpoint." + pos + ".y", Double.parseDouble(df.format(checkpoint.getStartPoint().getY())));
-                mapConfig.set("checkpoint." + pos + ".z", Double.parseDouble(df.format(checkpoint.getStartPoint().getZ())));
-                mapConfig.set("checkpoint." + pos + ".yaw", Double.parseDouble(df.format(checkpoint.getStartPoint().getYaw())));
-                mapConfig.set("checkpoint." + pos + ".pitch", Double.parseDouble(df.format(checkpoint.getStartPoint().getPitch())));
+                mapConfig.set("checkpoint." + pos + ".x", Utils.roundToTwo(checkpoint.getStartPoint().getX()));
+                mapConfig.set("checkpoint." + pos + ".y", Utils.roundToTwo(checkpoint.getStartPoint().getY()));
+                mapConfig.set("checkpoint." + pos + ".z", Utils.roundToTwo(checkpoint.getStartPoint().getZ()));
+                mapConfig.set("checkpoint." + pos + ".yaw", Utils.roundToTwo(checkpoint.getStartPoint().getYaw()));
+                mapConfig.set("checkpoint." + pos + ".pitch", Utils.roundToTwo(checkpoint.getStartPoint().getPitch()));
             } else if (checkpoint.getType() == SelectionType.MULTI) {
-                mapConfig.set("checkpoint." + pos + ".min.x", Double.parseDouble(df.format(checkpoint.getStartPoint().getX())));
-                mapConfig.set("checkpoint." + pos + ".min.y", Double.parseDouble(df.format(checkpoint.getStartPoint().getY())));
-                mapConfig.set("checkpoint." + pos + ".min.z", Double.parseDouble(df.format(checkpoint.getStartPoint().getZ())));
-                mapConfig.set("checkpoint." + pos + ".max.x", Double.parseDouble(df.format(checkpoint.getEndPoint().getX())));
-                mapConfig.set("checkpoint." + pos + ".max.y", Double.parseDouble(df.format(checkpoint.getEndPoint().getY())));
-                mapConfig.set("checkpoint." + pos + ".max.z", Double.parseDouble(df.format(checkpoint.getEndPoint().getZ())));
+                mapConfig.set("checkpoint." + pos + ".min.x", Utils.roundToTwo(checkpoint.getStartPoint().getX()));
+                mapConfig.set("checkpoint." + pos + ".min.y", Utils.roundToTwo(checkpoint.getStartPoint().getY()));
+                mapConfig.set("checkpoint." + pos + ".min.z", Utils.roundToTwo(checkpoint.getStartPoint().getZ()));
+                mapConfig.set("checkpoint." + pos + ".max.x", Utils.roundToTwo(checkpoint.getEndPoint().getX()));
+                mapConfig.set("checkpoint." + pos + ".max.y", Utils.roundToTwo(checkpoint.getEndPoint().getY()));
+                mapConfig.set("checkpoint." + pos + ".max.z", Utils.roundToTwo(checkpoint.getEndPoint().getZ()));
 
-                mapConfig.set("checkpoint." + pos + ".area-teleport.x", Double.parseDouble(df.format(checkpoint.getTeleportLocation().getX())));
-                mapConfig.set("checkpoint." + pos + ".area-teleport.y", Double.parseDouble(df.format(checkpoint.getTeleportLocation().getY())));
-                mapConfig.set("checkpoint." + pos + ".area-teleport.z", Double.parseDouble(df.format(checkpoint.getTeleportLocation().getZ())));
-                mapConfig.set("checkpoint." + pos + ".area-teleport.yaw", Double.parseDouble(df.format(checkpoint.getTeleportLocation().getYaw())));
-                mapConfig.set("checkpoint." + pos + ".area-teleport.pitch", Double.parseDouble(df.format(checkpoint.getTeleportLocation().getPitch())));
+                mapConfig.set("checkpoint." + pos + ".area-teleport.x", Utils.roundToTwo(checkpoint.getTeleportLocation().getX()));
+                mapConfig.set("checkpoint." + pos + ".area-teleport.y", Utils.roundToTwo(checkpoint.getTeleportLocation().getY()));
+                mapConfig.set("checkpoint." + pos + ".area-teleport.z", Utils.roundToTwo(checkpoint.getTeleportLocation().getZ()));
+                mapConfig.set("checkpoint." + pos + ".area-teleport.yaw", Utils.roundToTwo(checkpoint.getTeleportLocation().getYaw()));
+                mapConfig.set("checkpoint." + pos + ".area-teleport.pitch", Utils.roundToTwo(checkpoint.getTeleportLocation().getPitch()));
                 mapConfig.set("checkpoint." + pos + ".area-teleport.world", checkpoint.getTeleportLocation().getWorld().getName());
             }
             mapConfig.set("checkpoint." + pos + ".world", checkpoint.getStartPoint().getWorld().getName());
@@ -289,15 +284,14 @@ public class YamlProvider implements AccessProvider {
 
         File mapFile = new File(mapStorage.getAbsolutePath(), name + ".yml");
         if (mapFile.exists()) {
-            DecimalFormat df = new DecimalFormat("0.00");
             YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(mapFile);
             String zoneName = fallzone.getName();
-            mapConfig.set("fallzone." + zoneName + ".min.x", Double.parseDouble(df.format(fallzone.getStartPoint().getX())));
-            mapConfig.set("fallzone." + zoneName + ".min.y", Double.parseDouble(df.format(fallzone.getStartPoint().getY())));
-            mapConfig.set("fallzone." + zoneName + ".min.z", Double.parseDouble(df.format(fallzone.getStartPoint().getZ())));
-            mapConfig.set("fallzone." + zoneName + ".max.x", Double.parseDouble(df.format(fallzone.getEndPoint().getX())));
-            mapConfig.set("fallzone." + zoneName + ".max.y", Double.parseDouble(df.format(fallzone.getEndPoint().getY())));
-            mapConfig.set("fallzone." + zoneName + ".max.z", Double.parseDouble(df.format(fallzone.getEndPoint().getZ())));
+            mapConfig.set("fallzone." + zoneName + ".min.x", Utils.roundToTwo(fallzone.getStartPoint().getX()));
+            mapConfig.set("fallzone." + zoneName + ".min.y", Utils.roundToTwo(fallzone.getStartPoint().getY()));
+            mapConfig.set("fallzone." + zoneName + ".min.z", Utils.roundToTwo(fallzone.getStartPoint().getZ()));
+            mapConfig.set("fallzone." + zoneName + ".max.x", Utils.roundToTwo(fallzone.getEndPoint().getX()));
+            mapConfig.set("fallzone." + zoneName + ".max.y", Utils.roundToTwo(fallzone.getEndPoint().getY()));
+            mapConfig.set("fallzone." + zoneName + ".max.z", Utils.roundToTwo(fallzone.getEndPoint().getZ()));
             mapConfig.set("fallzone." + zoneName + ".world", fallzone.getStartPoint().getWorld().getName());
 
             try {

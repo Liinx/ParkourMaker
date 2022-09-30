@@ -24,6 +24,13 @@ public class Utils {
     private static final char SYMBOL_CHAR = '\u00a7';
 
     /**
+     * Rounds the double to only two decimal values.
+     */
+    public static double roundToTwo(double x) {
+        return (double) Math.round(x * 100) / 100;
+    }
+
+    /**
      * Provides a counter to be used with a playing consumer in for each stream
      * for example.
      */
